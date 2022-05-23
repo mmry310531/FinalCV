@@ -49,7 +49,17 @@ class Acne_Dector:
         
         # binary threshold
         bin_roi = roi.copy()
-        threshold = int(0.2 * 255)
+        
+        '''
+        if debug:
+            for i in range(5):
+                bin_roi = roi.copy()
+                threshold = int((0.1 + 0.02*i) * 255)
+                bin_roi[np.where(roi >= threshold)] = 100 + 20*i
+                self.show(bin_roi, 'bin_roi threshold')
+        '''
+        
+        threshold = int(0.13 * 255)
         bin_roi[np.where(roi < threshold)] = 0
         bin_roi[np.where(roi >= threshold)] = 255
         
@@ -65,7 +75,9 @@ class Acne_Dector:
         bin_roi_BGR = cv2.cvtColor(bin_roi, cv2.COLOR_GRAY2BGR)
         for cnt in contours:
             area = cv2.contourArea(cnt)
-            if area > 70:
+            if debug and area > 0:
+                print(area)
+            if area > 500:
                 cv2.drawContours(bin_roi_BGR, [cnt], -1, (0, 0, 0), -1)
             
         if debug:
@@ -73,13 +85,16 @@ class Acne_Dector:
         
         self.mask = cv2.cvtColor(bin_roi_BGR, cv2.COLOR_BGR2GRAY)
         #self.img[np.where(bin_roi!=255)] = 0
-        self.img[np.where(self.mask==255)] = 0
+        if debug:
+            self.img[np.where(self.mask==255)] = (0,0,255)
+        else:
+            self.img[np.where(self.mask==255)] = 0  
 
 
 
 if __name__ == '__main__':
-    img = cv2.imread('./Detect_Acne_DB/test2.jpg')
+    img = cv2.imread('./ClearMask.png')
     ad = Acne_Dector(img)
-    ad.run(False)
+    ad.run(True)
     ad.show(ad.mask, 'mask')
     ad.show(ad.img, 'result')
