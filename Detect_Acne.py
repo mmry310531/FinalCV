@@ -92,13 +92,20 @@ class Acne_Dector:
             else:
                 self.img[np.where(self.mask==255)] = 0  
                 
-        elif method == 1:            
+        elif method == 1:
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            mask = np.where(gray == 0)
+            
             img_lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)            
             A = img_lab[:, :, 1]
             
             kernel_size = 19            
             kernel = np.ones((kernel_size,kernel_size), np.float32)/500
-            low_pass = cv2.filter2D(A ,-1, kernel)
+            
+            # remove the effect of the black area while doing the low-pass filter
+            A_rm_mask = A.copy()
+            A_rm_mask[mask] = 140
+            low_pass = cv2.filter2D(A_rm_mask ,-1, kernel)
             
             diff = A-low_pass
             
@@ -113,7 +120,7 @@ class Acne_Dector:
                 area = cv2.contourArea(cnt)
                 if debug and area > 0:
                     print(area)
-                if area > 500:
+                if area > 300:
                     cv2.drawContours(bin_roi_BGR, [cnt], -1, (0, 0, 0), -1)
                     
             self.mask = cv2.cvtColor(bin_roi_BGR, cv2.COLOR_BGR2GRAY)
