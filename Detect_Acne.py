@@ -123,6 +123,14 @@ class Acne_Dector:
                     print(area)
                 if area > 300:
                     cv2.drawContours(bin_roi_BGR, [cnt], -1, (0, 0, 0), -1)
+                elif len(cnt) > 0:
+                    try:
+                        cnt_2d = np.reshape(cnt, (cnt.shape[0], 2))
+                        cnt_2d = proportional_zoom_contour(cnt_2d, 1.2 if area > 100 else 1.5)
+                        if cnt_2d.size > 0:
+                            cv2.drawContours(bin_roi_BGR, [cnt_2d], -1, (255, 255, 255), -1)
+                    except ValueError:
+                        pass
                     
             self.mask = cv2.cvtColor(bin_roi_BGR, cv2.COLOR_BGR2GRAY)
             
@@ -135,6 +143,36 @@ class Acne_Dector:
             
             self.img[np.where(self.mask==255)] = 0  
             self.img = cv2.inpaint(img, self.mask, 3, cv2.INPAINT_TELEA)
+
+import pyclipper
+
+def perimeter(poly):
+    p = 0
+    nums = poly.shape[0]
+    for i in range(nums):
+        p += abs(np.linalg.norm(poly[i % nums] - poly[(i + 1) % nums]))
+    return p
+
+def proportional_zoom_contour(contour, ratio):
+    """
+    多边形轮廓点按照比例进行缩放
+    :param contour: 一个图形的轮廓格式[[[x1, x2]],...],shape是(-1, 1, 2)
+    :param ratio: 缩放的比例，如果大于1是放大小于1是缩小
+    :return:
+    """
+    poly = contour[:, :]
+    area_poly = abs(pyclipper.Area(poly))
+    perimeter_poly = perimeter(poly)
+    poly_s = []
+    pco = pyclipper.PyclipperOffset()
+    pco.MiterLimit = 10
+    if perimeter_poly:
+        d = area_poly * (1 - ratio * ratio) / perimeter_poly
+        pco.AddPath(poly, pyclipper.JT_MITER, pyclipper.ET_CLOSEDPOLYGON)
+        poly_s = pco.Execute(-d)
+    poly_s = np.array(poly_s).reshape(-1, 1, 2).astype(int)
+
+    return poly_s
 
 if __name__ == '__main__':
     img = cv2.imread('./data/acne.jpg')
