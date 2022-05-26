@@ -110,7 +110,7 @@ class Acne_Dector:
             
             diff = A-low_pass
             
-            threshold = 42
+            threshold = 30
             ret, bin_roi = cv2.threshold(diff, threshold, 255, cv2.THRESH_BINARY)
             
             # remove abnormal area
@@ -141,8 +141,8 @@ class Acne_Dector:
                 self.show(bin_roi, 'bin')
 
             
-            self.img[np.where(self.mask==255)] = 0  
-            self.img = cv2.inpaint(img, self.mask, 3, cv2.INPAINT_TELEA)
+            # self.img[np.where(self.mask==255)] = 0  
+            # self.img[np.where(self.mask==255)] = (0,0,0)
 
 import pyclipper
 
