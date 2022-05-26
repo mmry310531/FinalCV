@@ -13,6 +13,7 @@ class Acne_Dector:
         cv2.destroyAllWindows()
 
     def save(self, filename='output'):
+        cv2.imwrite(f'./Detect_Acne_DB/{filename}_mask.jpg', self.mask)
         cv2.imwrite(f'./Detect_Acne_DB/{filename}.jpg', self.img)
 
     def run(self, method = 1, debug = True):
@@ -132,15 +133,13 @@ class Acne_Dector:
                 self.show(bin_roi, 'bin')
 
             
-            if debug:
-                self.img[np.where(self.mask==255)] = (0,0,255)
-            else:
-                self.img[np.where(self.mask==255)] = 0  
+            self.img[np.where(self.mask==255)] = 0  
+            self.img = cv2.inpaint(img, self.mask, 3, cv2.INPAINT_TELEA)
 
 if __name__ == '__main__':
-    img = cv2.imread('./ClearMask.png')
+    img = cv2.imread('./data/acne.jpg')
     ad = Acne_Dector(img)
-    ad.run(method =1, debug=True)
+    ad.run(method =1, debug=False)
     ad.show(ad.mask, 'mask')
     ad.show(ad.img, 'result')
     ad.save()
