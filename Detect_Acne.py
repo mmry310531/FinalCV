@@ -110,7 +110,7 @@ class Acne_Dector:
             
             diff = A-low_pass
             
-            threshold = 30
+            threshold = 20
             ret, bin_roi = cv2.threshold(diff, threshold, 255, cv2.THRESH_BINARY)
             
             # remove abnormal area
@@ -121,7 +121,7 @@ class Acne_Dector:
                 area = cv2.contourArea(cnt)
                 if debug and area > 0:
                     print(area)
-                if area > 300:
+                if area > 1200:
                     cv2.drawContours(bin_roi_BGR, [cnt], -1, (0, 0, 0), -1)
                 elif len(cnt) > 0:
                     try:
