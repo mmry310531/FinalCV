@@ -212,7 +212,7 @@ def GetSkinMask(img):
 
 
 
-get_ipython().run_line_magic('pip', 'install pyclipper')
+#get_ipython().run_line_magic('pip', 'install pyclipper')
 import pyclipper
 
 def perimeter(poly):
@@ -375,17 +375,18 @@ def Recording():
 
 
 
-
+import re
 
 if __name__ == "__main__":
     
     #Read Image
     FileNameList = []
     for i in (glob.glob(os.path.join("data", "t*"))):
-        FileNameList.append(i)
+        x = re.search(r'[0-9]+(jpg)?(png)?', i)
+        FileNameList.append((x.group(0), i))
 
 
-    for idx, file in enumerate(FileNameList):
+    for idx, file in FileNameList:
         Fail = False
     # Read One File
         print("processing " + file)
@@ -426,7 +427,7 @@ if __name__ == "__main__":
             print("can't process this image")
             print("face should be detectable")
         else:
-            saveName = "Results/r" + str(idx+1) + ".jpg" 
+            saveName = "Results/r" + idx + ".jpg" 
             cv2.imwrite(saveName, img)
     
 
