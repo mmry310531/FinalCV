@@ -288,12 +288,12 @@ def get_image_hull_mask(img, image_landmarks, ie_polys=None):
 #                         int_lmrks[68:81]), (255,255, 255))
 
     nose = proportional_zoom_contour(int_lmrks[27:36], 1.2)
-    l_eyes = proportional_zoom_contour(int_lmrks[36:42], 1.8)
-    r_eyes = proportional_zoom_contour(int_lmrks[42:48], 1.8)
-    mouse = proportional_zoom_contour(int_lmrks[48:60], 1.3)
+    l_eyes = proportional_zoom_contour(int_lmrks[36:42], 1.6)
+    r_eyes = proportional_zoom_contour(int_lmrks[42:48], 1.6)
+    mouse = proportional_zoom_contour(int_lmrks[48:60], 1.2)
     
-    l_brow = proportional_zoom_contour(int_lmrks[17:22], 1.4)
-    r_brow = proportional_zoom_contour(int_lmrks[22:27], 1.4)
+    l_brow = proportional_zoom_contour(int_lmrks[17:22], 1.2)
+    r_brow = proportional_zoom_contour(int_lmrks[22:27], 1.2)
     
     
     #face
@@ -381,8 +381,8 @@ if __name__ == "__main__":
     
     #Read Image
     FileNameList = []
-    for i in (glob.glob(os.path.join("data", "t*"))):
-        x = re.search(r'[0-9]+(jpg)?(png)?', i)
+    for i in (glob.glob(os.path.join("NewData", "t*"))):
+        x = re.search(r'[0-9]+(jpg)?(png)?(jpeg)?(webp)?', i)
         FileNameList.append((x.group(0), i))
 
 
