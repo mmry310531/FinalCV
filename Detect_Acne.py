@@ -143,6 +143,8 @@ class Acne_Dector:
             
             self.img[np.where(self.mask==255)] = 0  
             self.img = cv2.inpaint(img, self.mask, 3, cv2.INPAINT_TELEA)
+            
+            self.mask = bin_roi_BGR
 
 import pyclipper
 
