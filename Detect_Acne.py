@@ -134,6 +134,8 @@ class Acne_Dector:
                     
             self.mask = cv2.cvtColor(bin_roi_BGR, cv2.COLOR_BGR2GRAY)
             
+            
+            
             if debug:
                 self.show(A, 'A')
                 self.show(low_pass, 'low_pass')
@@ -144,7 +146,8 @@ class Acne_Dector:
             self.img[np.where(self.mask==255)] = 0  
             self.img = cv2.inpaint(img, self.mask, 3, cv2.INPAINT_TELEA)
             
-            self.mask = bin_roi_BGR
+            invert = cv2.bitwise_not(self.mask) # OR
+            self.mask = cv2.cvtColor(invert, cv2.COLOR_GRAY2BGR)
 
 import pyclipper
 
